@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Currency Converter</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f9fafc; }
+    h1 { color: #2c3e50; }
+    .converter { margin: 20px auto; padding: 20px; background: white; border-radius: 12px; width: 340px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    input, select, button { padding: 10px; margin: 10px 0; width: 90%; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #3498db; color: white; border: none; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    .adsense, .affiliate { margin: 25px 0; padding: 15px; background: #f1f1f1; border: 1px dashed #aaa; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🌍 Live Currency Converter</h1>
+
+  <div class="adsense">
+    <!-- Google AdSense Code Placeholder -->
+    <p>[ Insert Google AdSense Code Here ]</p>
+  </div>
+
+  <div class="converter">
+    <input type="number" id="amount" placeholder="Enter amount" />
+    <select id="from"></select>
+    <select id="to"></select>
+    <button onclick="convert()">Convert</button>
+    <h2 id="result"></h2>
+  </div>
+
+  <div class="affiliate">
+    <!-- Affiliate Links Placeholder -->
+    <p>[ Insert Affiliate Banners / Links Here ]</p>
+  </div>
+
+  <script>
+    const api = "https://api.exchangerate.host/latest";
+    const fromSelect = document.getElementById("from");
+    const toSelect = document.getElementById("to");
+
+    async function loadCurrencies() {
+      const res = await fetch(api);
+      const data = await res.json();
+      const currencies = Object.keys(data.rates);
+      currencies.forEach(c => {
+        fromSelect.innerHTML += `<option value="${c}">${c}</option>`;
+        toSelect.innerHTML += `<option value="${c}">${c}</option>`;
+      });
+      fromSelect.value = "USD";
+      toSelect.value = "EUR";
+    }
+
+    async function convert() {
+      const amount = document.getElementById("amount").value;
+      const from = fromSelect.value;
+      const to = toSelect.value;
+      if (!amount) return;
+      const res = await fetch(`${api}?base=${from}&symbols=${to}`);
+      const data = await res.json();
+      const rate = data.rates[to];
+      document.getElementById("result").innerText =
+        `${amount} ${from} = ${(amount * rate).toFixed(2)} ${to}`;
+    }
+
+    loadCurrencies();
+  </script>
+</body>
+</html>
